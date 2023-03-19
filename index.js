@@ -1,7 +1,10 @@
 /**** variable  ****/
 const card = document.querySelector(".countries-container");
+const btnSort = document.querySelectorAll(".btnSort");
 
 let dataCountry = [];
+let sortMethode = "maxToMin";
+
 /**** fetch ****/
 
 const fetchCountry = async () => {
@@ -19,6 +22,18 @@ const cardDisplay = () => {
         .toLowerCase()
         .includes(inputSearch.value.toLowerCase())
     )
+
+    .sort((a, b) => {
+      if (sortMethode === "maxToMin") {
+        return b.population - a.population;
+      } else if (sortMethode === "minToMax") {
+        return a.population - b.population;
+      } else if (sortMethode === "alpha") {
+        return a.translations.fra.common.localeCompare(
+          b.translations.fra.common
+        );
+      }
+    })
 
     .slice(0, inputRange.value)
     .map(
@@ -44,4 +59,11 @@ inputSearch.addEventListener("input", cardDisplay);
 inputRange.addEventListener("input", () => {
   cardDisplay();
   rangeValue.textContent = inputRange.value;
+});
+
+btnSort.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    sortMethode = e.target.id;
+    cardDisplay();
+  });
 });
